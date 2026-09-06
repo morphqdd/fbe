@@ -1300,6 +1300,14 @@ class TestOcto < Fbe::Test
     assert_equal('CHANGES_REQUESTED', reviews[0][:state])
   end
 
+  def test_fake_search_commits_carry_a_sha
+    o = Fbe.octo(loog: Loog::NULL, global: {}, options: Judges::Options.new({ 'testing' => true }))
+    o.search_commits('anything')[:items].each do |item|
+      refute_nil(item[:sha])
+      assert_equal(item[:sha], o.commit('foo/bar', item[:sha])[:sha])
+    end
+  end
+
   def test_fake_review_comments
     o = Fbe.octo(loog: Loog::NULL, global: {}, options: Judges::Options.new({ 'testing' => true }))
     comments = o.review_comments('yegor256/test', 100)
