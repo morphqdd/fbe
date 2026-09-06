@@ -73,11 +73,9 @@ def Fbe.pmp(fb: Fbe.fb, global: $global, options: $options, loog: $loog) # ruboc
     end
   bool =
     lambda do |value|
-      case value.to_s.downcase
-      when 'true' then true
-      when 'false' then false
-      else raise(ArgumentError, "invalid value for bool: #{value.to_s.inspect}")
-      end
+      text = value.to_s.downcase
+      raise(ArgumentError, "invalid value for bool: #{value.to_s.inspect}") unless %w[true false].include?(text)
+      text == 'true'
     end
   query = ->(area) { Fbe.fb(global:, fb:, options:, loog:).query("(and (eq what 'pmp') (eq area '#{area}'))") }
   Class.new do
