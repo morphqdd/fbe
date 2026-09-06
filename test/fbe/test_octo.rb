@@ -1300,6 +1300,16 @@ class TestOcto < Fbe::Test
     assert_equal('CHANGES_REQUESTED', reviews[0][:state])
   end
 
+  def test_fake_comment_reactions_match_their_count
+    o = Fbe.octo(loog: Loog::NULL, global: {}, options: Judges::Options.new({ 'testing' => true }))
+    o.pull_request_comments('foo/bar', 42).each do |comment|
+      assert_equal(
+        o.pull_request_review_comment_reactions('foo/bar', comment[:id]).size,
+        comment.dig(:reactions, :total_count)
+      )
+    end
+  end
+
   def test_fake_review_comments
     o = Fbe.octo(loog: Loog::NULL, global: {}, options: Judges::Options.new({ 'testing' => true }))
     comments = o.review_comments('yegor256/test', 100)
