@@ -17,41 +17,12 @@ require_relative '../test__helper'
 class TestFb < Fbe::Test
   def test_refuses_a_fact_each_rule_forbids
     {
-      'where' => lambda {
-         |f|
-        f.where = 'bitbucket'
-      },
-      'who' => lambda {
-         |f|
-        f.who = 'yegor'
-      },
-      'when' => lambda {
-         |f|
-        f.when = 'today'
-      },
-      'why' => lambda {
-         |f|
-        f.why = 42
-      },
-      'award' => lambda {
-         |f|
-        f.award = 5
-      },
-      '_job' => lambda {
-         |f|
-        f._job = 'x'
-      },
-      'issue' => lambda {
-         |f|
-        f.issue = 'x'
-      },
-      'repository' => lambda {
-         |f|
-        f.repository = 'x'
-      }
-    }.each do |label, set|
+      where: 'bitbucket', who: 'yegor', when: 'today', why: 42, award: 5, _job: 'x', issue: 'x', repository: 'x'
+    }.each do |prop, value|
       fb = Fbe.fb(fb: Factbase.new, global: {}, options: Judges::Options.new, loog: Loog::NULL)
-      assert_raises(StandardError, "A wrong #{label} must be refused") { fb.txn { |t| set.call(t.insert) } }
+      assert_raises(StandardError, "A wrong #{prop} must be refused") do
+        fb.txn { |t| t.insert.public_send(:"#{prop}=", value) }
+      end
     end
   end
 
