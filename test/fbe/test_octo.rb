@@ -16,8 +16,10 @@ require_relative '../test__helper'
 class TestOcto < Fbe::Test
   def test_fake_repository_events_go_in_a_possible_order
     ev = Fbe::FakeOctokit.new.repository_events('foo/bar').sort_by { |e| e[:created_at] }
-    assert_equal(%w[opened closed], ev.select { |e| e[:type] == 'IssuesEvent' }.map { |e| e[:payload][:action] }, 'First open')
-    assert_equal(%w[reopened closed], ev.select { |e| e[:type] == 'PullRequestEvent' }.map { |e| e[:payload][:action] }, 'Not closed twice')
+    issues = ev.filter_map { |e| e[:payload][:action] if e[:type] == 'IssuesEvent' }
+    pulls = ev.filter_map { |e| e[:payload][:action] if e[:type] == 'PullRequestEvent' }
+    assert_equal(%w[opened closed], issues, 'An issue must open first')
+    assert_equal(%w[reopened closed], pulls, 'A pull must not close twice')
   end
 
   def test_simple_use
