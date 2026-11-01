@@ -21,7 +21,7 @@ class TestFb < Fbe::Test
     Array.new(8) { fb.insert }.map do |f|
       Thread.new do
         500.times do |i|
-          f.send(:"p#{i % 5}=", i)
+          f.public_send(:"p#{i % 5}=", i)
         rescue StandardError => e
           errors << e.message
         end
