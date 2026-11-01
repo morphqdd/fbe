@@ -220,11 +220,22 @@ class TestGitHubGraph < Fbe::Test
   def test_reads_more_comments_of_a_frozen_thread
     thread = {
       'id' => 'T1', 'isResolved' => true,
-      'comments' => { 'nodes' => [{ 'id' => 'C1' }.freeze].freeze,
-                      'pageInfo' => { 'hasNextPage' => true, 'endCursor' => 'c1' }.freeze }.freeze
+      'comments' => {
+        'nodes' => [{ 'id' => 'C1' }.freeze].freeze,
+        'pageInfo' => { 'hasNextPage' => true, 'endCursor' => 'c1' }.freeze
+      }.freeze
     }.freeze
     pages = [
-      { 'repository' => { 'pullRequest' => { 'reviewThreads' => { 'nodes' => [thread].freeze, 'pageInfo' => {}.freeze } } } },
+      {
+        'repository' => {
+          'pullRequest' => {
+            'reviewThreads' => {
+              'nodes' => [thread].freeze,
+              'pageInfo' => {}.freeze
+            }
+          }
+        }
+      },
       { 'node' => { 'comments' => { 'nodes' => [{ 'id' => 'C2' }], 'pageInfo' => { 'hasNextPage' => false } } } }
     ]
     g = Fbe::Graph.new(token: 'fake')

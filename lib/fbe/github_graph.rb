@@ -128,7 +128,7 @@ class Fbe::Graph # rubocop:disable Metrics/ClassLength
       break unless page.dig('pageInfo', 'hasNextPage')
       cursor = page.dig('pageInfo', 'endCursor')
     end
-    threads.select { |thread| thread['isResolved'] }.map { |thread| with_comments(thread) }
+    threads.filter_map { |thread| with_comments(thread) if thread['isResolved'] }
   end
 
   # Gets the total number of commits in a branch.
