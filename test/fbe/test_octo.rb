@@ -14,6 +14,12 @@ require_relative '../test__helper'
 # Copyright:: Copyright (c) 2024-2026 Zerocracy
 # License:: MIT
 class TestOcto < Fbe::Test
+  def test_fake_repository_events_go_in_a_possible_order
+    ev = Fbe::FakeOctokit.new.repository_events('foo/bar').sort_by { |e| e[:created_at] }
+    assert_equal(%w[opened closed], ev.select { |e| e[:type] == 'IssuesEvent' }.map { |e| e[:payload][:action] }, 'First open')
+    assert_equal(%w[reopened closed], ev.select { |e| e[:type] == 'PullRequestEvent' }.map { |e| e[:payload][:action] }, 'Not closed twice')
+  end
+
   def test_simple_use
     global = {}
     options = Judges::Options.new({ 'testing' => true })
