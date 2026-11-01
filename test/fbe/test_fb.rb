@@ -15,6 +15,33 @@ require_relative '../test__helper'
 # Copyright:: Copyright (c) 2024-2026 Zerocracy
 # License:: MIT
 class TestFb < Fbe::Test
+  def test_refuses_a_fact_each_rule_forbids
+    {
+      'where' => ->(f) { f.where = 'bitbucket' },
+      'who' => ->(f) { f.who = 'yegor' },
+      'when' => ->(f) { f.when = 'today' },
+      'why' => ->(f) { f.why = 42 },
+      'award' => ->(f) { f.award = 5 },
+      '_job' => ->(f) { f._job = 'x' },
+      'issue' => ->(f) { f.issue = 'x' },
+      'repository' => ->(f) { f.repository = 'x' }
+    }.each do |label, set|
+      fb = Fbe.fb(fb: Factbase.new, global: {}, options: Judges::Options.new, loog: Loog::NULL)
+      assert_raises(StandardError, "A wrong #{label} must be refused") { fb.txn { |t| set.call(t.insert) } }
+    end
+  end
+
+  def test_accepts_a_fact_that_keeps_the_rules
+    fb = Fbe.fb(fb: Factbase.new, global: {}, options: Judges::Options.new, loog: Loog::NULL)
+    fb.txn do |t|
+      f = t.insert
+      f.where = 'github'
+      f.who = 42
+      f.when = Time.now
+    end
+    assert_equal(1, fb.size, 'A correct fact must pass')
+  end
+
   def test_simple
     $fb = Factbase.new
     $global = {}
