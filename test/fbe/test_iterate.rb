@@ -19,7 +19,7 @@ class TestIterate < Fbe::Test
   end
 
   def test_quota_aware_stops_while_off_quota
-    assert_empty(scanned_off_quota {}, 'An aware iterator must stop')
+    assert_empty(scanned_off_quota { nil }, 'An aware iterator must stop')
   end
 
   def test_simple

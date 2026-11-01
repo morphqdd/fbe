@@ -226,7 +226,6 @@ def Fbe.octo(options: $options, global: $global, loog: $loog) # rubocop:disable 
             def identity(name) # rubocop:disable Layout/EmptyLineBetweenDefs
               repo_id_by_name(name)
             end
-
             def repo_id_by_name(name) # rubocop:disable Layout/EmptyLineBetweenDefs
               raise(Fbe::Error, 'The name of the repo is nil') if name.nil?
               json = @origin.repository(name)
