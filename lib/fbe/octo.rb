@@ -277,6 +277,11 @@ def Fbe.octo(options: $options, global: $global, loog: $loog) # rubocop:disable 
           end
         client.instance_variable_set(:@top, o)
         o.instance_eval do
+          def paginate(url, options = {}, &block)
+            merged = block || ->(data, last) { data.concat(last.data) if data.is_a?(Array) }
+            method_missing(:paginate, url, options, &merged)
+          end
+
           def send(...)
             __send__(...)
           end
