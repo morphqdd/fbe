@@ -19,7 +19,10 @@ class TestOcto < Fbe::Test
     url = 'https://api.github.com/repos/foo/bar/things'
     base = { 'Content-Type' => 'application/json', 'X-RateLimit-Remaining' => '5000' }
     stub_request(:get, 'https://api.github.com/rate_limit').to_return(
-      body: { resources: { core: { remaining: 5000, limit: 5000, reset: 1 } }, rate: { remaining: 5000, limit: 5000, reset: 1 } }.to_json,
+      body: {
+        resources: { core: { remaining: 5000, limit: 5000, reset: 1 } },
+        rate: { remaining: 5000, limit: 5000, reset: 1 }
+      }.to_json,
       headers: base
     )
     stub_request(:get, /things/).to_return(
@@ -35,7 +38,10 @@ class TestOcto < Fbe::Test
   def test_paginates_through_all_pages
     WebMock.disable_net_connect!
     stub_request(:get, 'https://api.github.com/rate_limit').to_return(
-      body: { resources: { core: { remaining: 5000, limit: 5000, reset: 1 } }, rate: { remaining: 5000, limit: 5000, reset: 1 } }.to_json,
+      body: {
+        resources: { core: { remaining: 5000, limit: 5000, reset: 1 } },
+        rate: { remaining: 5000, limit: 5000, reset: 1 }
+      }.to_json,
       headers: { 'Content-Type' => 'application/json', 'X-RateLimit-Remaining' => '5000' }
     )
     url = 'https://api.github.com/repos/foo/bar/things'

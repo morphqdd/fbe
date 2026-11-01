@@ -281,8 +281,7 @@ def Fbe.octo(options: $options, global: $global, loog: $loog) # rubocop:disable 
             merged = block || ->(data, last) { data.concat(last.data) if data.is_a?(Array) }
             method_missing(:paginate, url, options, &merged)
           end
-
-          def send(...)
+          def send(...) # rubocop:disable Layout/EmptyLineBetweenDefs
             __send__(...)
           end
           def public_send(...) # rubocop:disable Layout/EmptyLineBetweenDefs, Elegant/GoodMethodName
